@@ -12,7 +12,9 @@ const int pinDT = 3;  // Broche DT de l'encodeur
 
 // Pins pour le bouton et la LED
 const int pinButton = 6; // Broche du bouton
-const int pinLED = 7;    // Broche de la LED
+const int pinButton2 = 5; // Broche du bouton2
+const int pinLED1 = 7;    // Broche de la LED1
+const int pinLED2 = 8;   // Broche de la LED2
 
 int lastStateCLK; // Dernier état de la broche CLK
 int position = 0; // Position actuelle du texte
@@ -24,7 +26,7 @@ void setup() {
   lcd.init();
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("JB & PAUL");
+  lcd.print("PAUL");
 
   // Initialisation des broches de l'encodeur
   pinMode(pinCLK, INPUT);
@@ -32,7 +34,9 @@ void setup() {
 
   // Initialisation des broches pour le bouton et la LED
   pinMode(pinButton, INPUT_PULLUP); // Bouton avec résistance pull-up interne
-  pinMode(pinLED, OUTPUT);          // LED en sortie
+  pinMode(pinButton2, INPUT_PULLUP); // Bouton avec résistance pull-up interne
+  pinMode(pinLED1, OUTPUT);          // LED en sortie
+  pinMode(pinLED2, OUTPUT);          // LED2 en sortie
 
   // Lire l'état initial de la broche CLK
   lastStateCLK = digitalRead(pinCLK);
@@ -42,9 +46,16 @@ void loop() {
   // Gestion du bouton et de la LED
   int buttonState = digitalRead(pinButton); // Lire l'état du bouton
   if (buttonState == HIGH) { // Bouton pressé (LOW car pull-up actif)
-    digitalWrite(pinLED, HIGH); // Allumer la LED
+    digitalWrite(pinLED1, HIGH); // Allumer la LED
   } else {
-    digitalWrite(pinLED, LOW); // Éteindre la LED
+    digitalWrite(pinLED1, LOW); // Éteindre la LED
+  }
+
+  int buttonState2 = digitalRead(pinButton2); // Lire l'état du bouton
+  if (buttonState2 == HIGH) { // Bouton pressé (LOW car pull-up actif)
+    digitalWrite(pinLED2, HIGH); // Allumer la LED
+  } else {
+    digitalWrite(pinLED2, LOW); // Éteindre la LED
   }
 
   // Lire l'état actuel de la broche CLK

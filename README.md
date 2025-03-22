@@ -1,7 +1,7 @@
 # LCD-Playground
 [![CircleCI](https://circleci.com/gh/jaybi/RADOM-WL-thermometre.svg?style=svg)](https://circleci.com/gh/jaybi/LCD-Playground)
 
-Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un encodeur rotatif, un bouton poussoir et une LED pour démontrer diverses fonctionnalités interactives avec une carte Arduino.
+Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un encodeur rotatif, un bouton poussoir et deux LEDs pour démontrer diverses fonctionnalités interactives avec une carte Arduino.
 
 ## Fonctionnalités
 
@@ -10,11 +10,12 @@ Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un e
    - Le texte peut être déplacé à gauche ou à droite en fonction de la rotation de l'encodeur rotatif.
    - Le texte rebondit sur les bords de l'écran comme une balle.
 
-2. **Contrôle de la LED avec un bouton** :
+2. **Contrôle des LEDs avec des boutons** :
    - Une LED connectée à la broche 7 s'allume lorsque le bouton poussoir (connecté à la broche 6) est pressé et s'éteint lorsqu'il est relâché.
+   - Une deuxième LED connectée à la broche 8 s'allume lorsque le bouton poussoir (connecté à la broche 5) est pressé et s'éteint lorsqu'il est relâché.
 
 3. **Encodeur rotatif** :
-   - L'encodeur rotatif est utilisé pour déplacer le texte sur l'écran LCD.
+   - L'encodeur rotatif est utilisé pour déplacer le texte sur l'écran LCD ou régler la vitesse de clignotement d'une LED.
    - Les broches CLK et DT de l'encodeur sont connectées respectivement aux broches 2 et 3 de l'Arduino.
 
 ## Matériel requis
@@ -22,9 +23,9 @@ Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un e
 - 1 x Arduino (Uno, Mega, ou compatible)
 - 1 x Écran LCD 16x2 avec module I2C (PCF8574)
 - 1 x Encodeur rotatif
-- 1 x Bouton poussoir
-- 1 x LED
-- 1 x Résistance 220Ω (pour la LED)
+- 2 x Boutons poussoirs
+- 2 x LEDs
+- 2 x Résistances 220Ω (pour les LEDs)
 - Câbles de connexion
 
 ## Schéma de connexion
@@ -45,17 +46,21 @@ Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un e
 | GND             | GND               |
 | VCC             | 5V (si nécessaire) |
 
-### Bouton poussoir
+### Boutons poussoirs
 | Broche Bouton | Connexion Arduino |
 |---------------|-------------------|
-| 1             | 6                 |
-| 2             | GND               |
+| Bouton 1 - 1  | 6                 |
+| Bouton 1 - 2  | GND               |
+| Bouton 2 - 1  | 5                 |
+| Bouton 2 - 2  | GND               |
 
-### LED
+### LEDs
 | Broche LED | Connexion Arduino |
 |------------|-------------------|
-| Anode (+)  | 7 (via une résistance de 220Ω) |
-| Cathode (-) | GND               |
+| LED 1 Anode (+)  | 7 (via une résistance de 220Ω) |
+| LED 1 Cathode (-) | GND               |
+| LED 2 Anode (+)  | 8 (via une résistance de 220Ω) |
+| LED 2 Cathode (-) | GND               |
 
 ## Installation
 
