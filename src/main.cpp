@@ -2,62 +2,37 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-LiquidCrystal_I2C lcd(0x38, 16, 2);
+// Broche du haut-parleur
+const int speakerPin = A0;
 
-// Pins de l'encodeur rotatif
+// Broches de l'encodeur rotatif
 const int pinCLK = 2; // Broche CLK de l'encodeur
 const int pinDT = 3;  // Broche DT de l'encodeur
 
-// Pins pour le bouton et la LED
-const int pinButton = 6; // Broche du bouton
-const int pinButton2 = 5; // Broche du bouton2
-const int pinLED1 = 7;    // Broche de la LED1
-const int pinLED2 = 8;   // Broche de la LED2
+// Initialisation de l'écran LCD (adresse I2C 0x27 ou 0x38, 16 colonnes, 2 lignes)
+LiquidCrystal_I2C lcd(0x38, 16, 2);
 
 int lastStateCLK; // Dernier état de la broche CLK
-int position = 0; // Position actuelle du texte
+int frequency = 440; // Fréquence initiale du son (La4)
 
 void setup() {
-  Serial.begin(9600);
-
   // Initialisation de l'écran LCD
   lcd.init();
-  lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("PAUL");
-
-  // Initialisation des broches de l'encodeur
+  lcd.print("Freq: ");
+  lcd.setCursor(0, 1);
+  lcd.print(frequency);
+  lcd.print(" Hz");
+  
+  Serial.begin(9600);
   pinMode(pinCLK, INPUT);
   pinMode(pinDT, INPUT);
-
-  // Initialisation des broches pour le bouton et la LED
-  pinMode(pinButton, INPUT_PULLUP); // Bouton avec résistance pull-up interne
-  pinMode(pinButton2, INPUT_PULLUP); // Bouton avec résistance pull-up interne
-  pinMode(pinLED1, OUTPUT);          // LED en sortie
-  pinMode(pinLED2, OUTPUT);          // LED2 en sortie
 
   // Lire l'état initial de la broche CLK
   lastStateCLK = digitalRead(pinCLK);
 }
 
 void loop() {
-  // Gestion du bouton et de la LED
-  int buttonState = digitalRead(pinButton); // Lire l'état du bouton
-  if (buttonState == HIGH) { // Bouton pressé (LOW car pull-up actif)
-    digitalWrite(pinLED1, HIGH); // Allumer la LED
-  } else {
-    digitalWrite(pinLED1, LOW); // Éteindre la LED
-  }
-
-  int buttonState2 = digitalRead(pinButton2); // Lire l'état du bouton
-  if (buttonState2 == HIGH) { // Bouton pressé (LOW car pull-up actif)
-    digitalWrite(pinLED2, HIGH); // Allumer la LED
-  } else {
-    digitalWrite(pinLED2, LOW); // Éteindre la LED
-  }
-
   // Lire l'état actuel de la broche CLK
   int currentStateCLK = digitalRead(pinCLK);
 
@@ -66,33 +41,39 @@ void loop() {
     // Lire l'état de la broche DT pour déterminer la direction
     int currentStateDT = digitalRead(pinDT);
 
+    Serial.print("CLK: ");
+    Serial.print(currentStateCLK);
+    Serial.print(" | DT: ");
+    Serial.println(currentStateDT);
+
     if (currentStateCLK == LOW) {
       if (currentStateDT == HIGH) {
-        // Rotation dans le sens horaire (droite)
-        position++;
+        // Rotation dans le sens horaire : augmenter la fréquence
+        frequency += 10; // Augmenter la fréquence de 10 Hz
+        if (frequency > 2000) frequency = 2000; // Limiter à 2000 Hz
       } else {
-        // Rotation dans le sens antihoraire (gauche)
-        position--;
+        // Rotation dans le sens antihoraire : diminuer la fréquence
+        frequency -= 10; // Réduire la fréquence de 10 Hz
+        if (frequency < 50) frequency = 50; // Limiter à 50 Hz
       }
 
-      // Limiter la position pour qu'elle reste dans les limites de l'écran
-      if (position < 0) {
-        position = 0;
-      } else if (position > 16 - 4) { // 16 colonnes - longueur du texte
-        position = 16 - 4;
-      }
+      // Afficher la fréquence actuelle dans le moniteur série
+      Serial.print("Frequency: ");
+      Serial.println(frequency);
 
-      // Effacer l'écran et afficher le texte à la nouvelle position
+      // Mettre à jour l'écran LCD avec la nouvelle fréquence
       lcd.clear();
-      lcd.setCursor(position, 0);
-      lcd.print("PAUL");
-
-      // Afficher la position dans le moniteur série (optionnel)
-      Serial.println(position);
+      lcd.setCursor(0, 0);
+      lcd.print("Freq: ");
+      lcd.setCursor(0, 1);
+      lcd.print(frequency);
+      lcd.print(" Hz");
     }
   }
 
   // Mettre à jour l'état précédent de CLK
   lastStateCLK = currentStateCLK;
-}
 
+  // Générer un son avec la fréquence actuelle
+  tone(speakerPin, frequency, 500); // Son de 500 ms
+}
