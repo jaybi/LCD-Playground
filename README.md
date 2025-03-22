@@ -1,5 +1,5 @@
 # LCD-Playground
-
+[![CircleCI](https://circleci.com/gh/jaybi/RADOM-WL-thermometre.svg?style=svg)](https://circleci.com/gh/jaybi/LCD-Playground)
 Ce projet utilise un écran LCD 16x2 connecté via un module I2C (PCF8574), un encodeur rotatif, un bouton poussoir et une LED pour démontrer diverses fonctionnalités interactives avec une carte Arduino.
 
 ## Fonctionnalités
