@@ -8,12 +8,6 @@ jobs:
       - run:
           command: pio pkg update
           name: Updating platformio
-      # - run: 
-      #     command: platformio lib -g install 251 # VirtualWire
-      #     name: Lib VirtualWire installing
-      # - run: 
-      #     command: platformio lib -g install 38 # LowPower
-      #     name: Lib LowPower installing
       - run: 
           command: pio check --skip-packages -v --project-conf=platformio.ini --fail-on-defect=medium --fail-on-defect=high
           name: Check defects >= medium
@@ -23,6 +17,15 @@ jobs:
       - run:
           command: pio run --environment=RELEASE
           name: Build-RELEASE
+      - run:
+          command: pio test --environment=DEBUG
+          name: Run Unit Tests
+      - run:
+          command: cppcheck --enable=all --inconclusive --error-exitcode=1 src/
+          name: Static Code Analysis
+      - store_artifacts:
+          path: .pio/build
+          destination: build-artifacts
 workflows:
   build:
     jobs:
